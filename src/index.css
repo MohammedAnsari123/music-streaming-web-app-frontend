@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #0E0E10;       /* Main app background */
+  --bg-secondary: #18181B;     /* Secondary sections */
+  --bg-surface: #1F1F23;       /* Cards, modals, player */
+
+  /* Borders & Dividers */
+  --border-default: #2A2A2E;
+
+  /* Text Colors */
+  --text-primary: #EDEDED;     /* Headings, main text */
+  --text-secondary: #A1A1AA;   /* Subtext, labels */
+  --text-disabled: #6B7280;    /* Disabled text */
+
+  /* Accent (Primary Brand Color) */
+  --accent-primary: #22C55E;   /* Buttons, active states */
+  --accent-hover: #16A34A;     /* Hover states */
+
+  /* Player & Controls */
+  --progress-active: #22C55E;
+  --progress-inactive: #3F3F46;
+  --volume-track: #52525B;
+
+  /* Status Colors (Optional) */
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --error: #EF4444;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.landingpagenavbar {
+  background-color: var(--progress-inactive);
+}
+
+.userLogin,
+.userSignUp {
+  background-color: var(--accent-primary);
+}
+
+.adminLogin {
+  background-color: var(--accent-primary);
+  color: black;
+}
