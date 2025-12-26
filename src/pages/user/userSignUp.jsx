@@ -27,7 +27,7 @@ const userSignUp = () => {
             if (response.ok) {
                 alert("User Created Successfully!")
                 register(data.user, data.token)
-                navigate('/dashboard')
+                navigate('/user/dashboard')
             } else {
                 console.error("Signup Failed - Backend Response:", data);
                 alert(data.error || 'User Creation failed')
@@ -55,7 +55,7 @@ const userSignUp = () => {
                         <div className="flex justify-center items-center">
                             <button type='submit' disabled={loading} className='bg-black text-white w-[100px] h-[45px] my-3 rounded-3xl'>Sign Up</button>
                         </div>
-                        <p>Login your Account <Link className='underline' to='/userLogin'>Here!</Link></p>
+                        <p>Login your Account <Link className='underline' to='/user/login'>Here!</Link></p>
                     </div>
                 </div>
             </form>

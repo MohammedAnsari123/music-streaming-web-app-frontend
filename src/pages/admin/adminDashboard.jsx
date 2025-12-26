@@ -1,103 +1,188 @@
 import React, { useState, useEffect } from 'react'
 import Sidebar from '../../components/sidebar'
+import { Music, Users, HardDrive } from 'lucide-react'
 
-const adminDashboard = () => {
-    const [title, setTitle] = useState('');
-    const [artist, setArtist] = useState('');
-    const [album, setAlbum] = useState('');
-    const [category, setCategory] = useState('');
-    const [songFile, setSongFile] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
-    const [loading, setLoading] = useState(false);
+const AdminDashboard = () => {
     const [songs, setSongs] = useState([]);
+    const [podcasts, setPodcasts] = useState([]); // New State
+    const [loading, setLoading] = useState(true);
 
-    const fetchSongs = async () => {
-        const res = await fetch('http://localhost:3000/api/songs/all');
-        const data = await res.json();
-        setSongs(data);
+    const fetchData = async () => {
+        try {
+            // Parallel Fetch
+            const [songsRes, podcastsRes] = await Promise.all([
+                fetch('http://localhost:3000/api/songs/all'),
+                fetch('http://localhost:3000/api/podcasts')
+            ]);
+
+            const songsData = await songsRes.json();
+            const podcastsData = await podcastsRes.json();
+
+            if (Array.isArray(songsData)) setSongs(songsData);
+            if (Array.isArray(podcastsData)) setPodcasts(podcastsData);
+
+        } catch (error) {
+            console.error("Error fetching dashboard data:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        fetchSongs();
+        fetchData();
     }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('artist', artist);
-        formData.append('album', album);
-        formData.append('category', category);
-        formData.append('song', songFile);
-        formData.append('image', imageFile);
-
-        try {
-            const res = await fetch('http://localhost:3000/api/songs/add', {
-                method: 'POST',
-                body: formData,
-            });
-            const data = await res.json();
-            if (res.ok) {
-                alert('Song Upload!')
-                fetchSongs();
-            } else {
-                alert(data.error);
+    const handleDeleteSong = async (id) => {
+        if (confirm("Are you sure you want to delete this song?")) {
+            try {
+                const token = localStorage.getItem('token');
+                // ... same delete logic for song
+                const res = await fetch(`http://localhost:3000/api/songs/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Failed');
+                fetchData();
+            } catch (error) {
+                alert("Failed to delete song");
             }
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
-        }
-    };
-
-    const handleDelete = async (id) => {
-        if (confirm("Are you sure?")) {
-            await fetch(`http://localhost:3000/api/songs/delete/${id}`, {
-                method: 'DELETE'
-            });
-            fetchSongs();
         }
     }
 
-    return (
-        <div className="flex">
-            <Sidebar />
-            <div className="ml-[20%] w-full p-10">
-                <h1 className="text-3xl font-bold mb-5">Upload New Music</h1>
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-lg mb-10">
-                    <input type="text" placeholder="Title" className="p-2 border rounded text-black" onChange={e => setTitle(e.target.value)} required />
-                    <input type="text" placeholder="Artist" className="p-2 border rounded text-black" onChange={e => setArtist(e.target.value)} required />
-                    <input type="text" placeholder="Album" className="p-2 border rounded text-black" onChange={e => setAlbum(e.target.value)} />
-                    <input type="text" placeholder="Category" className="p-2 border rounded text-black" onChange={e => setCategory(e.target.value)} required />
+    // New Delete for Podcasts (Optional but good)
+    const handleDeletePodcast = async (id) => {
+        // Placeholder alert until backend route exists for delete podcast
+        alert("Delete feature for podcasts coming soon!");
+    }
 
-                    <label>Song File (MP3)</label>
-                    <input type="file" accept="audio/*" onChange={e => setSongFile(e.target.files[0])} required />
-                    <label>Cover Image</label>
-                    <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files[0])} required />
-                    <button disabled={loading} className="bg-green-500 text-white p-2 rounded">
-                        {loading ? 'Uploading...' : 'Upload Song'}
-                    </button>
-                </form>
-                <h2 className="text-2xl font-bold mb-4">All Songs</h2>
-                <ul>
-                    {songs.map(song => (
-                        <li key={song.id} className="flex justify-between items-center p-2 border-b">
-                            <div className="flex items-center gap-3">
-                                <img src={song.image_url} alt="art" className="w-10 h-10 object-cover rounded" />
-                                <div>
-                                    <p className="font-bold">{song.title}</p>
-                                    <p className="text-sm text-gray-500">{song.artist}</p>
-                                </div>
-                            </div>
-                            <button onClick={() => handleDelete(song.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
-                        </li>
-                    ))}
-                </ul>
+    // Calculate simple stats
+    const totalSongs = songs.length;
+    const totalPodcasts = podcasts.length;
+    const totalArtists = new Set(songs.map(song => song.artist)).size;
+    const totalCategories = new Set(songs.map(song => song.category)).size;
+
+    return (
+        <div className="flex h-screen bg-black text-white">
+            <Sidebar />
+            <div className="ml-[15%] w-full p-10 overflow-y-auto">
+                <h1 className="text-3xl font-bold mb-8">Dashboard Overview</h1>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                    <div className="bg-gradient-to-br from-green-900 to-green-700 p-6 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div className="bg-black/20 p-3 rounded-full">
+                            <Music size={32} className="text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-medium text-green-100">Total Songs</h3>
+                            <p className="text-3xl font-bold text-white">{totalSongs}</p>
+                        </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-indigo-900 to-indigo-700 p-6 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div className="bg-black/20 p-3 rounded-full">
+                            <i className="fas fa-podcast text-white text-2xl"></i> {/* Or lucide icon */}
+                            <Users size={32} className="text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-medium text-indigo-100">Total Podcasts</h3>
+                            <p className="text-3xl font-bold text-white">{totalPodcasts}</p>
+                        </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-900 to-purple-700 p-6 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div className="bg-black/20 p-3 rounded-full">
+                            <Users size={32} className="text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-medium text-purple-100">Artists</h3>
+                            <p className="text-3xl font-bold text-white">{totalArtists}</p>
+                        </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-900 to-blue-700 p-6 rounded-xl flex items-center gap-4 shadow-lg">
+                        <div className="bg-black/20 p-3 rounded-full">
+                            <HardDrive size={32} className="text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-medium text-blue-100">Categories</h3>
+                            <p className="text-3xl font-bold text-white">{totalCategories}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid lg:grid-cols-1 gap-8">
+                    {/* Songs Table */}
+                    <div className="bg-[#181818] rounded-xl overflow-hidden border border-[#282828]">
+                        <div className="p-6 border-b border-[#282828]">
+                            <h2 className="text-xl font-bold">Music Library</h2>
+                        </div>
+                        <div className="overflow-x-auto max-h-[400px]">
+                            <table className="w-full text-left">
+                                <thead className="bg-[#202020] text-gray-400 sticky top-0">
+                                    <tr>
+                                        <th className="p-4">Track</th>
+                                        <th className="p-4">Artist</th>
+                                        <th className="p-4">Album</th>
+                                        <th className="p-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {songs.map(song => (
+                                        <tr key={song.id} className="border-b border-[#282828] hover:bg-[#202020] transition-colors">
+                                            <td className="p-4 flex items-center gap-4">
+                                                <img src={song.image_url} alt="art" className="w-10 h-10 object-cover rounded shadow-md" />
+                                                <span className="font-semibold">{song.title}</span>
+                                            </td>
+                                            <td className="p-4 text-gray-300">{song.artist}</td>
+                                            <td className="p-4 text-gray-400">{song.album || '-'}</td>
+                                            <td className="p-4">
+                                                <button onClick={() => handleDeleteSong(song.id)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Podcasts Table */}
+                    <div className="bg-[#181818] rounded-xl overflow-hidden border border-[#282828]">
+                        <div className="p-6 border-b border-[#282828]">
+                            <h2 className="text-xl font-bold">Podcast Library</h2>
+                        </div>
+                        <div className="overflow-x-auto max-h-[400px]">
+                            <table className="w-full text-left">
+                                <thead className="bg-[#202020] text-gray-400 sticky top-0">
+                                    <tr>
+                                        <th className="p-4">Podcast</th>
+                                        <th className="p-4">Publisher</th>
+                                        <th className="p-4">Description</th>
+                                        <th className="p-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {podcasts.map(pod => (
+                                        <tr key={pod.id} className="border-b border-[#282828] hover:bg-[#202020] transition-colors">
+                                            <td className="p-4 flex items-center gap-4">
+                                                <img src={pod.image_url} alt="art" className="w-10 h-10 object-cover rounded shadow-md" />
+                                                <span className="font-semibold">{pod.title}</span>
+                                            </td>
+                                            <td className="p-4 text-gray-300">{pod.publisher}</td>
+                                            <td className="p-4 text-gray-400 truncate max-w-[200px]">{pod.description}</td>
+                                            <td className="p-4">
+                                                <button onClick={() => handleDeletePodcast(pod.id)} className="text-gray-500 hover:text-gray-300 text-sm cursor-not-allowed" disabled>Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {podcasts.length === 0 && !loading && (
+                                        <tr><td colSpan="4" className="p-8 text-center text-gray-500">No podcasts found.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
 }
 
-export default adminDashboard
+export default AdminDashboard

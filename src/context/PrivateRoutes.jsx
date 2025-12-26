@@ -12,7 +12,7 @@ const PrivateRoutes = () => {
     )
   }
   return (
-    token ? <Outlet /> : <Navigate to="/userLogin" />
+    token ? <Outlet /> : <Navigate to="/user/login" />
   )
 }
 

@@ -29,7 +29,7 @@ const adminLogin = () => {
             if (response.ok) {
                 alert('Admin Login Success')
                 login(data.user, data.token)
-                navigate('/adminDashboard')
+                navigate('/admin/dashboard')
             } else {
                 alert('Admin Login Failed')
             }
@@ -52,7 +52,7 @@ const adminLogin = () => {
                             <input className='mx-5 my-1 w-72 h-12 p-2 text-black rounded-3xl items-center' onChange={(e) => setAdminPassword(e.target.value)} type="password" />
                         </div>
                         <div className="flex justify-center items-center">
-                            <button  className='bg-black text-white px-12 py-2 my-3 rounded-3xl'>Admin Login</button>
+                            <button className='bg-black text-white px-12 py-2 my-3 rounded-3xl'>Admin Login</button>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
@@ -27,7 +27,7 @@ const userLogin = () => {
             if (response.ok) {
                 alert("Login Successful!")
                 login(data.user, data.token)
-                navigate('/dashboard')
+                navigate('/user/dashboard')
             } else {
                 alert(data.error || 'Login failed')
             }
@@ -52,7 +52,7 @@ const userLogin = () => {
                         <div className="flex justify-center items-center">
                             <button disabled={loading} className='bg-black text-white w-[100px] h-[45px] my-3 rounded-3xl'>Login</button>
                         </div>
-                        <p>Create a New Account <Link className='underline' to='/userSignUp'>Here!</Link></p>
+                        <p>Create a New Account <Link className='underline' to='/user/signup'>Here!</Link></p>
                     </div>
                 </div>
             </form>
