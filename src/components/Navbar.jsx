@@ -35,9 +35,6 @@ const Navbar = () => {
 
                 {/* Auth Buttons */}
                 <div className="flex items-center gap-4">
-                    <Link to='/admin/login' className="text-gray-300 hover:text-white font-medium transition-colors hidden sm:block">
-                        Admin
-                    </Link>
                     <Link to='/user/login' className="bg-white text-black px-6 py-2 rounded-full font-bold hover:scale-105 transition-transform">
                         Log in
                     </Link>

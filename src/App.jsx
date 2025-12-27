@@ -17,15 +17,6 @@ import PodcastDetail from './pages/user/PodcastDetail'
 import Playlists from './pages/user/Playlists'
 import PlaylistDetail from './pages/user/PlaylistDetail'
 
-// Admin Pages
-import AdminLogin from './pages/admin/adminLogin'
-import AdminDashboard from './pages/admin/adminDashboard'
-import UploadTrack from './pages/admin/UploadTrack'
-import UploadPodcast from './pages/admin/UploadPodcast'
-import UploadEpisode from './pages/admin/UploadEpisode'
-import AdminLibrary from './pages/admin/AdminLibrary'
-import AdminUsers from './pages/admin/AdminUsers'
-
 function App() {
   return (
     <ErrorBoundary>
@@ -44,16 +35,6 @@ function App() {
               <Route path='/user/library' element={<Playlists />}></Route>
               <Route path='/user/playlist/:id' element={<PlaylistDetail />}></Route>
               <Route path='/user/liked' element={<LikedSongs />}></Route>
-            </Route>
-
-            <Route path='/admin/login' element={<AdminLogin />}></Route>
-            <Route element={<PrivateRoutes />}>
-              <Route path='/admin/dashboard' element={<AdminDashboard />}></Route>
-              <Route path='/admin/upload' element={<UploadTrack />}></Route>
-              <Route path='/admin/upload-podcast' element={<UploadPodcast />}></Route>
-              <Route path='/admin/upload-episode' element={<UploadEpisode />}></Route>
-              <Route path='/admin/library' element={<AdminLibrary />}></Route>
-              <Route path='/admin/users' element={<AdminUsers />}></Route>
             </Route>
           </Routes>
 
