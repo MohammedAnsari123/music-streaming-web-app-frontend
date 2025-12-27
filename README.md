@@ -1,164 +1,126 @@
-# StreamLite - User Frontend Application
+# StreamLite - User Frontend Application 🎨
 
-**StreamLite** is a modern, high-performance music streaming web application designed to provide a seamless listening experience. It leverages a unique hybrid architecture, combining **Spotify's** rich metadata for discovery with the **Audius Network's** decentralized audio streaming for playback.
+**StreamLite Frontend** is the immersive, polished interface that connects users to the world of music. Built with **React** and **Vite**, it emphasizes speed, visual fidelity (animations), and a seamless "app-like" playback experience.
 
-This documentation covers the architecture, features, technology stack, and setup instructions for the User Frontend.
-
----
-
-## 📚 Table of Contents
-- [Overview](#overview)
-- [✨ Key Features](#-key-features)
-- [🛠️ Technology Stack](#️-technology-stack)
-- [📂 Project Structure](#-project-structure)
-- [⚙️ Setup & Installation](#️-setup--installation)
-- [🎨 UI/UX Design System](#-uiux-design-system)
-- [🔧 Core Components](#-core-components)
+> **Status:** 🟢 Active | **Version:** 1.0.0 | **Served on:** `localhost:5173`
 
 ---
 
-## Overview
-The User Frontend is the public-facing interface where users interact with the platform. It is built as a **Single Page Application (SPA)** using React and Vite, ensuring fast load times and smooth transitions. It communicates with the StreamLite Backend API to fetch data and resolve audio streams.
+## 📑 Table of Contents
+1.  [Application Architecture](#-application-architecture)
+2.  [Component Breakdown](#-component-breakdown)
+3.  [State Management (The Core)](#-state-management-the-core)
+4.  [Tech Stack & Dependencies](#-tech-stack--dependencies)
+5.  [Folder Structure](#-folder-structure)
+6.  [Installation & Dev Workflow](#-installation--dev-workflow)
 
 ---
 
-## ✨ Key Features
+## 🏗 Application Architecture
 
-### 🎵 Music Playback System
-*   **Persistent Player:** A global audio player bar that remains active across page navigation (`AudioPlayer.jsx`).
-*   **Smart Resolution:** Automatically bridges Spotify metadata to playable Audius streams.
-*   **Controls:** Play, Pause, Next, Previous, Shuffle, Repeat, Volume Control, and Seek Bar.
-*   **Error Handling:** Graceful fallbacks for unplayable tracks (e.g., "Track not available").
+The frontend is a **Single Page Application (SPA)**. It loads once and effectively handles all navigation client-side, ensuring music never stops playing when you switch pages.
 
-### 🔍 Discovery & Search
-*   **Unified Search:** Real-time search that queries both the local library and external APIs (`/api/search`).
-*   **Debounced Input:** Optimized search input to reduce API calls.
-*   **Category Filtering:** Filter music by genres (Pop, Rock, Indiewave, etc.) on the dashboard.
+### Data Flow Diagram
 
-### 👤 User Experience
-*   **Landing Page:** immersive entrance with interactive Canvas API particle animations (`landingPage.jsx`).
-*   **Authentication:** Secure Login and Sign-up forms with JWT token management (`AuthContext.jsx`).
-*   **Dashboard:** Personalized home feed showing "Recently Played" and recommended tracks.
-
-### 📚 Library Management
-*   **Liked Songs:** Dedicated view for user-favorited tracks.
-*   **Playlists:** Create, view, and manage custom playlists.
-*   **Podcasts:** Browse and listen to episodic podcast content.
-
----
-
-## 🛠️ Technology Stack
-
-### Core Frameworks
-*   **[React 18+](https://react.dev/):** UI Library for building component-based interfaces.
-*   **[Vite](https://vitejs.dev/):** Next-generation frontend tooling for ultra-fast development and building.
-
-### Styling & Animation
-*   **[Tailwind CSS](https://tailwindcss.com/):** Utility-first CSS framework for rapid, responsive design.
-*   **[Lucide React](https://lucide.dev/):** Beautiful, consistent icon set.
-*   **HTML5 Canvas:** Used for high-performance background particle animations.
-*   **CSS Modules/Global:** Custom variables for theming (Green/Black aesthetic).
-
-### State Management & Routing
-*   **Context API:** Native React state management used for:
-    *   `AuthContext`: User session and token storage.
-    *   `AudioPlayerContext`: Global playback state (current track, queue, isPlaying).
-*   **[React Router DOM](https://reactrouter.com/):** Client-side routing for seamless navigation.
-
-### Utilities
-*   **Fetch API:** For HTTP requests to the Backend.
-*   **Prop-Types:** (Implicit usage via component props) for data validation.
-
----
-
-## 📂 Project Structure
-
-```text
-frontend/
-├── public/                 # Static assets (images, icons)
-├── src/
-│   ├── components/         # Reusable UI Blocks
-│   │   ├── AudioPlayer.jsx    # The global music player bar
-│   │   ├── Navbar.jsx         # Top navigation
-│   │   ├── Sidebar.jsx        # (Deprecated/Removed for User App)
-│   │   ├── TrackCard.jsx      # Individual song display card
-│   │   ├── AnimatedBackground # Canvas particle effect
-│   │   └── ...
-│   │
-│   ├── context/            # Global State Logic
-│   │   ├── AuthContext.jsx       # Login/Signup logic
-│   │   ├── AudioPlayerContext.jsx # Playback engine & Spotify->Audius bridge
-│   │   └── PrivateRoutes.jsx     # Route protection wrapper
-│   │
-│   ├── pages/              # Page Views
-│   │   ├── landingPage.jsx    # Public entrance page
-│   │   ├── user/              # Authenticated User Pages
-│   │   │   ├── userLogin.jsx
-│   │   │   ├── userMusicDashboard.jsx
-│   │   │   ├── LikedSongs.jsx
-│   │   │   └── ...
-│   │
-│   ├── App.jsx             # Main Route Definitions
-│   ├── main.jsx            # Entry point
-│   └── index.css           # Global styles & Tailwind directives
-│
-├── .env                    # Environment variables
-├── index.html              # HTML root
-├── package.json            # Dependencies
-├── postcss.config.js       # CSS processing config
-├── tailwind.config.js      # Tailwind theme config
-└── vite.config.js          # Vite bundler config
+```mermaid
+graph LR
+    User[User Interaction] --> View[React Component]
+    View -->|Action| Context[AudioPlayerContext]
+    Context -->|API Call| Backend[Express Backend]
+    Backend -->|Data/Stream| Context
+    Context -->|State Update| Player[Audio Element]
+    Player -->|Sound| Speakers
 ```
 
 ---
 
-## ⚙️ Setup & Installation
+## 🧩 Component Breakdown
 
-### Prerequisites
-*   Node.js (v16 or higher)
-*   NPM (Node Package Manager)
+### 1. The Global Players
+These components live outside the `<Routes>` and persist throughout the session.
+*   **`AudioPlayer.jsx`**: The fixed bottom bar. It attaches to the `AudioPlayerContext` to visualize time, volume, and track info. It manages the HTML5 `<audio>` tag refs.
+*   **`Navbar.jsx`**: Responsive top navigation. Adapts to scroll state (transparent -> glassmorphism).
 
-### Installation Steps
+### 2. The Context Layer
+*   **`AudioPlayerContext.jsx`**: The "Brain" of the app.
+    *   **Functions:** `playTrack(track)`, `pause()`, `next()`, `prev()`.
+    *   **Logic:** Handles the "Resolution Bridge"—if a track is from Spotify, it asks the backend to resolve it before setting the audio source.
+*   **`AuthContext.jsx`**: Manages the JWT token in `localStorage` and provides `user` object to the app.
 
-1.  **Navigate to the frontend directory:**
-    ```bash
-    cd frontend
-    ```
-
-2.  **Install Dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Environment Setup:**
-    Ensure backend is running on `http://localhost:3000` (default expectation). If changed, update API layouts.
-
-4.  **Run Development Server:**
-    ```bash
-    npm run dev
-    ```
-    Access the app at `http://localhost:5173`.
+### 3. Page Views
+*   **`landingPage.jsx`**: A visual masterpiece using HTML5 Canvas for particle animations. Purely presentation.
+*   **`userMusicDashboard.jsx`**: The main hub. Displays "Trending", "New Releases" (via Spotify API), and "Local Hits".
+*   **`UserSearch.jsx`**: A real-time search interface with debounced inputs to prevent API flooding.
 
 ---
 
-## 🎨 UI/UX Design System
+## ⚡ State Management (The Core)
 
-*   **Color Palette:**
-    *   **Primary:** StreamLite Green (`#22C55E`)
-    *   **Background:** Deep Black (`#000000`) & Dark Gray (`#121212`)
-    *   **Text:** White (`#FFFFFF`) & Light Gray (`#A1A1AA`)
-*   **Typography:** Sans-serif (System default / Inter-like).
-*   **Responsiveness:** Fully responsive design using Tailwind's mobile-first breakpoints (`sm`, `md`, `lg`).
+We use React's **Context API** to avoid prop-drilling.
+
+### The Playback Cycle
+
+1.  **User Clicks Play** on a `TrackCard`.
+2.  `playTrack(track)` function in Context is triggered.
+3.  **Source Check:**
+    *   If `track.source === 'local'`, set `audio.src = track.audio_url`.
+    *   If `track.source === 'spotify'`, call `await fetch('/api/resolve')`.
+        *   Backend returns a temporary Audius Stream URL.
+        *   Context sets `audio.src = returned_url`.
+4.  **State Update:** `isPlaying` becomes `true`, `currentTrack` is updated.
+5.  **UI Reaction:** Use `useEffect` in `AudioPlayer.jsx` to detect `currentTrack` change and auto-play.
 
 ---
 
-## 🔧 Core Components Explanation
+## 💻 Tech Stack & Dependencies
 
-### `AudioPlayerContext.jsx` (The Brain)
-This is the most critical file. It manages:
-*   **Queue Management:** Next/Prev logic.
-*   **Resolution Bridge:** When a track with `source: 'spotify'` is requested, it calls the backend `/api/resolve` endpoint to find the corresponding audio stream on Audius before playing.
-*   **State:** `isPlaying`, `currentTrack`, `volume`, `duration`.
+| Tool | Purpose |
+| :--- | :--- |
+| **Vite** | Build tool. Replaces Webpack. Starts server in milliseconds. |
+| **React 18** | UI Library. Uses Hooks (`useState`, `useEffect`) extensively. |
+| **Tailwind CSS v3** | Styling. No CSS files (except entry). Utility-first classes. |
+| **React Router v6** | Client-side routing. Enables SPA behavior. |
+| **Lucide React** | Feather-light SVG icons (Play, Pause, Home buttons). |
+| **React Toastify** | Feedback popups (errors, success messages). |
 
-### `AudioPlayer.jsx` (The Interface)
-The visual player bar. It consumes the context to update the seek bar, display album art, and handle user clicks. It uses the native HTML5 `<audio>` tag but controls it programmatically via React refs.
+---
+
+## 📂 Folder Structure
+
+The project follows a "Feature-First" organization within standard type directories.
+
+```text
+src/
+├── components/          # Dumb/UI Components
+│   ├── AudioPlayer.jsx
+│   ├── TrackCard.jsx    # Pure display component
+│   └── ...
+├── context/             # App Business Logic
+│   ├── AudioPlayerContext.jsx
+│   └── AuthContext.jsx
+├── pages/               # Route Views
+│   ├── user/            # Authenticated Views
+│   │   ├── userMusicDashboard.jsx
+│   │   └── ...
+│   └── admin/           # (Legacy/Removed - see separate Admin App)
+├── assets/              # Images, Fonts
+└── App.jsx              # Route Tree Definitions
+```
+
+---
+
+## 🛠 Installation & Dev Workflow
+
+### Prerequisite
+Ensure the **Backend** is running on `:3000`.
+
+### Steps
+1.  **Install:** `npm install`
+2.  **Dev Server:** `npm run dev`
+    *   Starts at `http://localhost:5173`.
+3.  **Build for Production:** `npm run build`
+    *   Generates optimized static files in `/dist`.
+
+### Common Issues
+*   **"Audio Source Error"**: Usually means the Backend Resolver failed or the Audius API is unreachable.
+*   **"403 Forbidden"**: Your Token expired. Log out and Log back in.
