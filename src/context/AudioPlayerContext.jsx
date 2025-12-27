@@ -42,24 +42,62 @@ export const AudioPlayerProvider = ({ children }) => {
         fetchHistory();
     }, []);
 
-    const playTrack = (track) => {
-        if (currentTrack?.id === track.id) {
+    const playTrack = async (track) => {
+        let trackToPlay = track;
+
+        // BRIDGE: Spotify -> Audius Resolution
+        if (track.source === 'spotify') {
+            try {
+                console.log("Resolving Spotify track via Audius...", track.title);
+                // Optional: Set loading state here if UI supports it
+
+                const res = await fetch('http://127.0.0.1:3000/api/resolve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: track.title, artist: track.artist })
+                });
+
+                if (!res.ok) {
+                    throw new Error("Playback resolution failed");
+                }
+
+                const data = await res.json();
+
+                if (data.error === "NOT_FOUND") {
+                    console.log("Track not found on Audius network.");
+                    alert("This track is not available for free playback.");
+                    return; // Stop execution
+                }
+
+                console.log("Resolved:", data);
+
+                // Merge Spotify metadata with Audius Audio
+                trackToPlay = {
+                    ...track,
+                    audio_url: data.audio_url,
+                    duration: data.duration, // Update duration if Audius knows better
+                    source: 'audius' // Switch source context for playback? Or keep 'spotify' but with url? 
+                    // User said "Audius playback only". 
+                    // Let's keep metadata but use resolved URL.
+                };
+            } catch (err) {
+                console.error("Resolution flow error:", err);
+                return;
+            }
+        }
+
+        if (currentTrack?.id === trackToPlay.id) {
             togglePlayPause();
             return;
         }
 
         // New track
-        setCurrentTrack(track); // Start fresh
+        setCurrentTrack(trackToPlay); // Start fresh
 
         // CHECK RESUME
-        // We need to wait for metadata to load to seek, generally.
-        // But we can set a "targetSeek" state or do it in handleLoadedMetadata if we know it's a resume.
-        // For simplicity: Check history immediately.
-        const resumePos = history[track.id];
+        const resumePos = history[trackToPlay.id];
         if (resumePos && resumePos > 5) {
-            console.log(`Resuming ${track.title} at ${resumePos}s`);
-            // We'll apply this seek in handleLoadedMetadata or directly if audio ref is ready quickly
-            // A cleaner way is to store "pendingSeek" state
+            console.log(`Resuming ${trackToPlay.title} at ${resumePos}s`);
             setPendingSeek(resumePos);
         } else {
             setPendingSeek(null);
@@ -156,7 +194,18 @@ export const AudioPlayerProvider = ({ children }) => {
                 setPendingSeek(null); // Clear
             }
             if (isPlaying) {
-                audioRef.current.play().catch(e => console.error("Playback failed", e));
+                const playPromise = audioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        if (error.name === 'AbortError') {
+                            // Expected if user pauses/switches quickly
+                            console.log("Playback interrupted (AbortError)");
+                        } else {
+                            console.error("Playback failed:", error);
+                            setIsPlaying(false);
+                        }
+                    });
+                }
             }
         }
     };

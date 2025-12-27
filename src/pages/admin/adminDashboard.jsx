@@ -4,7 +4,7 @@ import { Music, Users, HardDrive } from 'lucide-react'
 
 const AdminDashboard = () => {
     const [songs, setSongs] = useState([]);
-    const [podcasts, setPodcasts] = useState([]); // New State
+    const [podcasts, setPodcasts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
@@ -36,7 +36,6 @@ const AdminDashboard = () => {
         if (confirm("Are you sure you want to delete this song?")) {
             try {
                 const token = localStorage.getItem('token');
-                // ... same delete logic for song
                 const res = await fetch(`http://localhost:3000/api/songs/delete/${id}`, {
                     method: 'DELETE',
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -49,10 +48,27 @@ const AdminDashboard = () => {
         }
     }
 
-    // New Delete for Podcasts (Optional but good)
     const handleDeletePodcast = async (id) => {
-        // Placeholder alert until backend route exists for delete podcast
-        alert("Delete feature for podcasts coming soon!");
+        if (confirm("Are you sure you want to delete this podcast? This will also delete all its episodes.")) {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`http://localhost:3000/api/admin/podcasts/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || 'Failed to delete podcast');
+                }
+
+                // Refresh
+                fetchData();
+            } catch (error) {
+                console.error(error);
+                alert("Failed to delete podcast: " + error.message);
+            }
+        }
     }
 
     // Calculate simple stats
@@ -80,7 +96,6 @@ const AdminDashboard = () => {
                     </div>
                     <div className="bg-gradient-to-br from-indigo-900 to-indigo-700 p-6 rounded-xl flex items-center gap-4 shadow-lg">
                         <div className="bg-black/20 p-3 rounded-full">
-                            <i className="fas fa-podcast text-white text-2xl"></i> {/* Or lucide icon */}
                             <Users size={32} className="text-white" />
                         </div>
                         <div>
@@ -168,7 +183,7 @@ const AdminDashboard = () => {
                                             <td className="p-4 text-gray-300">{pod.publisher}</td>
                                             <td className="p-4 text-gray-400 truncate max-w-[200px]">{pod.description}</td>
                                             <td className="p-4">
-                                                <button onClick={() => handleDeletePodcast(pod.id)} className="text-gray-500 hover:text-gray-300 text-sm cursor-not-allowed" disabled>Delete</button>
+                                                <button onClick={() => handleDeletePodcast(pod.id)} className="text-red-400 hover:text-red-300 text-sm">Delete</button>
                                             </td>
                                         </tr>
                                     ))}

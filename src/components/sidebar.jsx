@@ -49,16 +49,16 @@ const Sidebar = () => {
                             </Link>
                         </li>
                         <li>
-                            <div className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
+                            <Link to="/admin/library" className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
                                 <Library size={24} />
                                 <span className="font-semibold">Library</span>
-                            </div>
+                            </Link>
                         </li>
                         <li>
-                            <div className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
+                            <Link to="/admin/users" className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
                                 <Users size={24} />
                                 <span className="font-semibold">Users</span>
-                            </div>
+                            </Link>
                         </li>
                     </ul>
                 </nav>

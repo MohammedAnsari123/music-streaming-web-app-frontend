@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserNavbar from '../../components/userNavbar';
-import CreatePlaylistModal from '../../components/CreatePlaylistModal'; // Reuse this
+import CreatePlaylistModal from '../../components/CreatePlaylistModal';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import EmptyState from '../../components/EmptyState';
 import { Plus, Music } from 'lucide-react';
@@ -27,6 +27,13 @@ const Playlists = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            if (res.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                navigate('/user/login');
+                return;
+            }
 
             if (!res.ok) throw new Error("Failed to fetch playlists");
             const data = await res.json();

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import AnimatedBackground from '../../components/AnimatedBackground'
 
 const userLogin = () => {
     const [email, setEmail] = useState('')
@@ -38,24 +39,52 @@ const userLogin = () => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit} action="">
-                <div className="flex flex-col w-[100vw] h-[100vh]">
-                    <div className="userLogin p-10 rounded-2xl text-black m-auto">
-                        <h1 className='text-center text-5xl mb-5'>Login here</h1>
-                        <div className="">
-                            <h4 className='m-2 text-lg'>Enter Your Email</h4>
-                            <input onChange={(e) => setEmail(e.target.value)} className='mx-5 my-1 w-72 h-12 p-2 text-black rounded-3xl items-center' type="text" placeholder='email' />
-                            <h4 className='m-2 text-lg'>Enter Your Password</h4>
-                            <input onChange={(e) => setPassword(e.target.value)} className='mx-5 my-1 w-72 h-12 p-2 text-black rounded-3xl items-center' type="password" placeholder='password' />
+        <div className="relative min-h-screen w-full bg-black text-white font-sans overflow-hidden flex items-center justify-center">
+            <AnimatedBackground />
+
+            {/* Content Container with Glassmorphism */}
+            <div className="relative z-10 w-full max-w-md p-8">
+                <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-lg border border-white/20 p-8 rounded-3xl shadow-2xl animate-in fade-in zoom-in duration-500">
+                    <h1 className='text-center text-4xl font-bold mb-8 bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent'>
+                        Welcome Back
+                    </h1>
+
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-gray-300 text-sm font-medium mb-2 pl-2">Email</label>
+                            <input
+                                onChange={(e) => setEmail(e.target.value)}
+                                className='w-full h-12 px-4 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all'
+                                type="text"
+                                placeholder='Enter your email'
+                            />
                         </div>
-                        <div className="flex justify-center items-center">
-                            <button disabled={loading} className='bg-black text-white w-[100px] h-[45px] my-3 rounded-3xl'>Login</button>
+                        <div>
+                            <label className="block text-gray-300 text-sm font-medium mb-2 pl-2">Password</label>
+                            <input
+                                onChange={(e) => setPassword(e.target.value)}
+                                className='w-full h-12 px-4 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all'
+                                type="password"
+                                placeholder='Enter your password'
+                            />
                         </div>
-                        <p>Create a New Account <Link className='underline' to='/user/signup'>Here!</Link></p>
                     </div>
-                </div>
-            </form>
+
+                    <button
+                        disabled={loading}
+                        className='w-full mt-8 h-12 bg-green-500 hover:bg-green-400 text-black font-bold rounded-xl transition-all hover:scale-[1.02] shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed'
+                    >
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
+
+                    <div className="mt-6 text-center text-gray-400 text-sm">
+                        Don't have an account?
+                        <Link className='ml-2 text-green-400 hover:text-green-300 font-medium hover:underline' to='/user/signup'>
+                            Sign up here
+                        </Link>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

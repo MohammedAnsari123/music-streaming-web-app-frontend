@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import { PlayCircle, Clock } from 'lucide-react';
 
 const RecentlyPlayed = () => {
     const [recent, setRecent] = useState([]);
     const { playTrack } = useAudioPlayer();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRecent = async () => {
             const token = localStorage.getItem('token');
+            if (!token) return; // Silent fail if no token
+
             try {
                 const res = await fetch('http://localhost:3000/api/recently-played', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
+
+                if (res.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    navigate('/user/login');
+                    return;
+                }
+
                 const data = await res.json();
                 if (Array.isArray(data)) {
                     setRecent(data);

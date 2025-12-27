@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Music } from 'lucide-react';
 
-const AddToPlaylistModal = ({ isOpen, onClose, trackId }) => {
+const AddToPlaylistModal = ({ isOpen, onClose, track }) => {
     const [playlists, setPlaylists] = useState([]);
     const [loading, setLoading] = useState(true);
     const [adding, setAdding] = useState(null); // Playlist ID being added to
@@ -34,13 +34,14 @@ const AddToPlaylistModal = ({ isOpen, onClose, trackId }) => {
         setAdding(playlistId);
         try {
             const token = localStorage.getItem('token');
+            // Backend expects { track: trackObject }
             const res = await fetch(`http://localhost:3000/api/playlists/${playlistId}/tracks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ trackId })
+                body: JSON.stringify({ track })
             });
 
             if (!res.ok) {
@@ -51,6 +52,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, trackId }) => {
             // Success feedback? Close modal?
             onClose(); // Or show a toast message
         } catch (err) {
+            console.error(err);
             alert(err.message); // Simple alert for now
         } finally {
             setAdding(null);

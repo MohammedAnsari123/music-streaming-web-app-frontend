@@ -44,10 +44,14 @@ const AudioPlayer = () => {
             {/* Hidden Audio Element */}
             <audio
                 ref={audioRef}
-                src={currentTrack.song_url}
+                src={currentTrack.audio_url || currentTrack.song_url}
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
                 onEnded={handleEnded}
+                onError={(e) => {
+                    console.error("Audio Error:", e.nativeEvent);
+                    // Optional: setIsPlaying(false) via context if needed, but context handles state
+                }}
             />
         </div>
     );

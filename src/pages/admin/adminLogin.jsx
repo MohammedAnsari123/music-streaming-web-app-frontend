@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import AnimatedBackground from '../../components/AnimatedBackground'
 
 const adminLogin = () => {
     const [adminEmail, setAdminEmail] = useState('')
@@ -39,24 +40,48 @@ const adminLogin = () => {
     }
 
     return (
-        <div>
-            <form onSubmit={handleSubmit} action="">
-                <div className="h-[100vh] w-[100vw] flex flex-col justify-center items-center">
-                    <div className="adminLogin p-7 rounded-2xl flex flex-col justify-center items-center">
-                        <h1 className='text-center text-5xl mb-5'>Admin Login</h1>
-                        <div className="bg-[#2A2A2E] h-[1px] w-11/12"></div>
-                        <div className="">
-                            <h4 className="m-2 text-lg">Enter Admin Email</h4>
-                            <input className='mx-5 my-1 w-72 h-12 p-2 text-black rounded-3xl items-center' onChange={(e) => setAdminEmail(e.target.value)} type="text" />
-                            <h4 className="m-2 text-lg">Enter Admin Password</h4>
-                            <input className='mx-5 my-1 w-72 h-12 p-2 text-black rounded-3xl items-center' onChange={(e) => setAdminPassword(e.target.value)} type="password" />
+        <div className="relative min-h-screen w-full bg-black text-white font-sans overflow-hidden flex items-center justify-center">
+            <AnimatedBackground />
+
+            <div className="relative z-10 w-full max-w-md p-8">
+                <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl shadow-2xl animate-in fade-in zoom-in duration-500">
+                    <div className="text-center mb-10">
+                        <span className="text-xs font-bold tracking-widest text-green-500 uppercase border border-green-500/30 px-3 py-1 rounded-full bg-green-500/10">Admin Access</span>
+                        <h1 className='text-4xl font-bold mt-4 text-white'>
+                            Control Center
+                        </h1>
+                    </div>
+
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-gray-400 text-sm font-medium mb-2 pl-2">Email</label>
+                            <input
+                                className='w-full h-12 px-4 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all'
+                                onChange={(e) => setAdminEmail(e.target.value)}
+                                type="text"
+                                placeholder='admin@streamlite.com'
+                            />
                         </div>
-                        <div className="flex justify-center items-center">
-                            <button className='bg-black text-white px-12 py-2 my-3 rounded-3xl'>Admin Login</button>
+                        <div>
+                            <label className="block text-gray-400 text-sm font-medium mb-2 pl-2">Password</label>
+                            <input
+                                className='w-full h-12 px-4 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all'
+                                onChange={(e) => setAdminPassword(e.target.value)}
+                                type="password"
+                                placeholder='••••••••'
+                            />
                         </div>
                     </div>
-                </div>
-            </form>
+
+                    <button className='w-full mt-8 h-12 bg-white text-black hover:bg-gray-200 font-bold rounded-xl transition-all hover:scale-[1.02] shadow-lg'>
+                        Authenticate
+                    </button>
+
+                    <div className="mt-8 text-center">
+                        <p className="text-xs text-gray-600">Restricted Area. Authorized Personnel Only.</p>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

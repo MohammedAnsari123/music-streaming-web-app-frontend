@@ -30,10 +30,10 @@ const UserNavbar = () => {
                                 </Link>
                             </li>
                             <li>
-                                <div className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
+                                <Link to="/user/search" className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
                                     <Search size={24} />
                                     <span className="font-bold">Search</span>
-                                </div>
+                                </Link>
                             </li>
                             <li>
                                 <Link to="/user/library" className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
@@ -48,12 +48,12 @@ const UserNavbar = () => {
                                 </Link>
                             </li>
                             <li className='pt-4'>
-                                <div className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
+                                <Link to="/user/liked" className='flex items-center gap-3 px-2 hover:text-white transition-colors cursor-pointer'>
                                     <div className="bg-gradient-to-br from-indigo-700 to-blue-300 p-1 rounded-sm opacity-90">
                                         <Heart size={16} fill='white' color='white' />
                                     </div>
                                     <span className="font-bold">Liked Songs</span>
-                                </div>
+                                </Link>
                             </li>
                         </ul>
                     </nav>
@@ -73,10 +73,10 @@ const UserNavbar = () => {
                     <Home size={20} />
                     <span className="text-[10px] font-medium">Home</span>
                 </Link>
-                <div className='flex flex-col items-center gap-1 hover:text-white'>
+                <Link to="/user/search" className='flex flex-col items-center gap-1 hover:text-white'>
                     <Search size={20} />
                     <span className="text-[10px] font-medium">Search</span>
-                </div>
+                </Link>
                 <Link to="/user/podcasts" className='flex flex-col items-center gap-1 hover:text-white'>
                     <span className="text-xl">🎙️</span>
                     <span className="text-[10px] font-medium">Podcasts</span>
