@@ -230,7 +230,7 @@ const LandingPage = () => {
                 </footer>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 @keyframes wave {
                     0%, 100% { height: 20%; }
                     50% { height: 100%; }
