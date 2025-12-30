@@ -35,7 +35,7 @@ const TrackCard = ({ track }) => {
 
     const handlePlayClick = (e) => {
         e.stopPropagation();
-        if (!track.audio_url && track.source !== 'local') {
+        if (!track.audio_url && track.source !== 'local' && track.source !== 'internet_archive' && track.source !== 'spotify') {
             console.error("Missing audio_url for track:", track);
             // alert("Cannot play this track: invalid URL"); // Optional
             return;

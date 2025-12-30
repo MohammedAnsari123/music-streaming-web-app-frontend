@@ -68,22 +68,30 @@ const UserNavbar = () => {
             </div>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 w-full h-16 bg-black border-t border-[#282828] text-gray-400 flex justify-around items-center z-50">
+            <div className="md:hidden fixed bottom-0 left-0 w-full h-16 bg-black border-t border-[#282828] text-gray-400 flex justify-around items-center z-50 px-2">
                 <Link to="/user/dashboard" className='flex flex-col items-center gap-1 hover:text-white'>
                     <Home size={20} />
-                    <span className="text-[10px] font-medium">Home</span>
+                    <span className="text-[9px] font-medium">Home</span>
                 </Link>
                 <Link to="/user/search" className='flex flex-col items-center gap-1 hover:text-white'>
                     <Search size={20} />
-                    <span className="text-[10px] font-medium">Search</span>
+                    <span className="text-[9px] font-medium">Search</span>
+                </Link>
+                <Link to="/user/library" className='flex flex-col items-center gap-1 hover:text-white'>
+                    <Library size={20} />
+                    <span className="text-[9px] font-medium">Library</span>
                 </Link>
                 <Link to="/user/podcasts" className='flex flex-col items-center gap-1 hover:text-white'>
-                    <span className="text-xl">🎙️</span>
-                    <span className="text-[10px] font-medium">Podcasts</span>
+                    <span className="text-xl leading-none">🎙️</span>
+                    <span className="text-[9px] font-medium">Podcasts</span>
+                </Link>
+                <Link to="/user/liked" className='flex flex-col items-center gap-1 hover:text-white'>
+                    <Heart size={20} />
+                    <span className="text-[9px] font-medium">Liked</span>
                 </Link>
                 <button onClick={handleLogout} className='flex flex-col items-center gap-1 hover:text-white'>
                     <LogOut size={20} />
-                    <span className="text-[10px] font-medium">Out</span>
+                    <span className="text-[9px] font-medium">Out</span>
                 </button>
             </div>
         </>

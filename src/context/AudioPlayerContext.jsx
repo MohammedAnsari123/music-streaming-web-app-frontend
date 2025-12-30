@@ -51,7 +51,7 @@ export const AudioPlayerProvider = ({ children }) => {
                 console.log("Resolving Spotify track via Audius...", track.title);
                 // Optional: Set loading state here if UI supports it
 
-                const res = await fetch('http://127.0.0.1:3000/api/resolve', {
+                const res = await fetch('http://localhost:3000/api/resolve', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title: track.title, artist: track.artist })
@@ -82,6 +82,42 @@ export const AudioPlayerProvider = ({ children }) => {
                 };
             } catch (err) {
                 console.error("Resolution flow error:", err);
+                return;
+            }
+        }
+
+        // BRIDGE: Internet Archive Resolution
+        if (track.source === 'internet_archive') {
+            try {
+                console.log("Resolving Internet Archive track...", track.title);
+                const res = await fetch('http://localhost:3000/api/resolve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: track.id,
+                        source: 'internet_archive',
+                        title: track.title, // Pass for logging/fallback
+                        artist: track.artist
+                    })
+                });
+
+                if (!res.ok) throw new Error("IA Resolution failed");
+                const data = await res.json();
+
+                if (!data.audio_url) {
+                    alert("Audio file not found for this item.");
+                    return;
+                }
+
+                trackToPlay = {
+                    ...track,
+                    audio_url: data.audio_url,
+                    duration: data.duration,
+                    source: 'internet_archive'
+                };
+
+            } catch (err) {
+                console.error("IA Resolution Error:", err);
                 return;
             }
         }
