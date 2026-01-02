@@ -101,9 +101,21 @@ const PodcastDetail = () => {
                     {episodes.length === 0 ? (
                         <p className="text-gray-500">No episodes available.</p>
                     ) : (
-                        episodes.map(ep => (
-                            <EpisodeItem key={ep.id} episode={ep} podcast={podcast} />
-                        ))
+                        (() => {
+                            const normalizedEpisodes = episodes.map(ep => ({
+                                id: ep.id,
+                                title: ep.title,
+                                artist: podcast.publisher || podcast.title,
+                                image_url: podcast.image_url,
+                                audio_url: ep.audio_url,
+                                duration: ep.duration,
+                                created_at: ep.created_at
+                            }));
+
+                            return normalizedEpisodes.map(ep => (
+                                <EpisodeItem key={ep.id} episode={ep} contextQueue={normalizedEpisodes} />
+                            ));
+                        })()
                     )}
                 </div>
             </div>

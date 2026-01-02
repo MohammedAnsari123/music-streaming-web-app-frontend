@@ -15,7 +15,7 @@ const TrackList = ({ tracks }) => {
                 <TrackCard
                     key={track.id}
                     track={track}
-                    onPlay={playTrack}
+                    contextQueue={tracks}
                     isCurrent={currentTrack?.id === track.id}
                     isPlaying={isPlaying}
                 />

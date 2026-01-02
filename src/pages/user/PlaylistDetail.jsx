@@ -58,7 +58,7 @@ const PlaylistDetail = () => {
 
     const handlePlayPlaylist = () => {
         if (playlist?.tracks?.length > 0) {
-            playTrack(playlist.tracks[0]);
+            playTrack(playlist.tracks[0], playlist.tracks);
         }
     };
 
@@ -129,7 +129,7 @@ const PlaylistDetail = () => {
                                 <div>
                                     <div
                                         className="font-bold text-white hover:underline cursor-pointer"
-                                        onClick={() => playTrack(track)}
+                                        onClick={() => playTrack(track, playlist.tracks)}
                                     >
                                         {track.title}
                                     </div>

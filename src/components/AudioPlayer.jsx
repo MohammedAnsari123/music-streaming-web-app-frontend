@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import PlayerControls from './PlayerControls';
 import ProgressBar from './ProgressBar';
+import { Volume2, VolumeX, ListMusic } from 'lucide-react';
+import QueueSidebar from './QueueSidebar';
 
 const AudioPlayer = () => {
+    const [showQueue, setShowQueue] = useState(false);
     const {
         audioRef,
         currentTrack,
         handleTimeUpdate,
         handleLoadedMetadata,
-        handleEnded
+        handleEnded,
+        volume,
+        setVolume
     } = useAudioPlayer();
 
     if (!currentTrack) return null;
@@ -34,7 +39,28 @@ const AudioPlayer = () => {
                 <ProgressBar />
             </div>
 
-            <div className="hidden md:flex w-1/3 justify-end">
+            <div className="flex w-full md:w-1/3 justify-center md:justify-end items-center gap-4 md:gap-2 pr-0 md:pr-4 mt-4 md:mt-0">
+                <button
+                    onClick={() => setShowQueue(!showQueue)}
+                    className={`transition-colors ${showQueue ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}
+                    title="Queue"
+                >
+                    <ListMusic size={20} />
+                </button>
+                <div className="flex items-center gap-2">
+                    <button onClick={() => setVolume(volume === 0 ? 1 : 0)} className="text-gray-400 hover:text-white">
+                        {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                    </button>
+                    <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={volume}
+                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        className="w-24 md:w-24 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
+                    />
+                </div>
             </div>
 
             <audio
@@ -48,6 +74,7 @@ const AudioPlayer = () => {
 
                 }}
             />
+            {showQueue && <QueueSidebar onClose={() => setShowQueue(false)} />}
         </div>
     );
 };

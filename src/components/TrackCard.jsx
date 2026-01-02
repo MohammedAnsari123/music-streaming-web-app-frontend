@@ -3,7 +3,7 @@ import { Play, Pause, Plus, Heart } from 'lucide-react';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 import AddToPlaylistModal from './AddToPlaylistModal';
 
-const TrackCard = ({ track }) => {
+const TrackCard = ({ track, contextQueue = null }) => {
     const { currentTrack, isPlaying, togglePlayPause, playTrack } = useAudioPlayer();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
@@ -41,7 +41,7 @@ const TrackCard = ({ track }) => {
         if (isCurrentTrack) {
             togglePlayPause();
         } else {
-            playTrack(track);
+            playTrack(track, contextQueue);
         }
     };
 
@@ -72,7 +72,7 @@ const TrackCard = ({ track }) => {
             <div
                 className={`bg-[#181818] p-4 rounded-lg hover:bg-[#282828] transition-colors group cursor-pointer relative ${isCurrentTrack ? 'bg-[#282828]' : ''
                     }`}
-                onClick={() => playTrack(track)}
+                onClick={() => playTrack(track, contextQueue)}
             >
                 <div className="relative mb-4">
                     <img

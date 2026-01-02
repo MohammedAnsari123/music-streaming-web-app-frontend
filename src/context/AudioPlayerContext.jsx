@@ -39,8 +39,29 @@ export const AudioPlayerProvider = ({ children }) => {
         fetchHistory();
     }, []);
 
-    const playTrack = async (track) => {
+    const [queue, setQueue] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(-1);
+
+    const playTrack = async (track, newQueue = null) => {
         let trackToPlay = track;
+
+        // Update Queue if provided
+        if (newQueue) {
+            setQueue(newQueue);
+            const idx = newQueue.findIndex(t => t.id === track.id);
+            setCurrentIndex(idx);
+        } else {
+            // Logic: If track is in current queue, just update index. Else, reset queue.
+            // But for now, simple fallback: if not in queue, make it a single track queue
+            // Check if track exists in current queue (shallow check of ID)
+            const existingIdx = queue.findIndex(t => t.id === track.id);
+            if (existingIdx !== -1) {
+                setCurrentIndex(existingIdx);
+            } else {
+                setQueue([track]);
+                setCurrentIndex(0);
+            }
+        }
 
         if (track.source === 'spotify') {
             try {
@@ -129,6 +150,29 @@ export const AudioPlayerProvider = ({ children }) => {
         }
 
         setIsPlaying(true);
+    };
+
+    const playNext = () => {
+        if (queue.length === 0 || currentIndex === -1) return;
+        if (currentIndex < queue.length - 1) {
+            playTrack(queue[currentIndex + 1]);
+        } else if (repeatMode === 'queue') {
+            playTrack(queue[0]);
+        }
+    };
+
+    const playPrevious = () => {
+        if (queue.length === 0 || currentIndex === -1) return;
+
+        // If current time > 3s, restart track
+        if (currentTime > 3) {
+            seek(0);
+            return;
+        }
+
+        if (currentIndex > 0) {
+            playTrack(queue[currentIndex - 1]);
+        }
     };
 
     const [pendingSeek, setPendingSeek] = useState(null);
@@ -221,10 +265,39 @@ export const AudioPlayerProvider = ({ children }) => {
         }
     };
 
+    const [repeatMode, setRepeatMode] = useState('off'); // 'off', 'track', 'queue'
+
+    const toggleRepeat = () => {
+        setRepeatMode(prev => {
+            if (prev === 'off') return 'queue';
+            if (prev === 'queue') return 'track';
+            return 'off';
+        });
+    };
+
     const handleEnded = () => {
-        setIsPlaying(false);
-        saveProgress(currentTrack, 0);
-        setHistory(prev => ({ ...prev, [currentTrack.id]: 0 }));
+        if (repeatMode === 'track' && audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
+            return;
+        }
+
+        // Auto-play next if available
+        if (queue.length > 0) {
+            if (currentIndex < queue.length - 1) {
+                playNext();
+            } else if (repeatMode === 'queue') {
+                playTrack(queue[0]); // Loop back to start
+            } else {
+                setIsPlaying(false);
+                saveProgress(currentTrack, 0);
+                setHistory(prev => ({ ...prev, [currentTrack.id]: 0 }));
+            }
+        } else {
+            setIsPlaying(false);
+            saveProgress(currentTrack, 0);
+            setHistory(prev => ({ ...prev, [currentTrack.id]: 0 }));
+        }
     };
 
     const handleVolumeChange = (newVolume) => {
@@ -241,10 +314,15 @@ export const AudioPlayerProvider = ({ children }) => {
         currentTime,
         duration,
         volume,
+        queue,
+        repeatMode,
         playTrack,
+        playNext,
+        playPrevious,
         togglePlayPause,
         seek,
         setVolume: handleVolumeChange,
+        toggleRepeat,
         handleTimeUpdate,
         handleLoadedMetadata,
         handleEnded

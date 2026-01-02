@@ -2,22 +2,14 @@ import React from 'react';
 import { Play, Pause } from 'lucide-react';
 import { useAudioPlayer } from '../context/AudioPlayerContext';
 
-const EpisodeItem = ({ episode, podcast }) => {
+const EpisodeItem = ({ episode, contextQueue }) => {
     const { playTrack, currentTrack, isPlaying } = useAudioPlayer();
-
-    const normalizedTrack = {
-        id: episode.id,
-        title: episode.title,
-        artist: podcast.publisher || podcast.title,
-        image_url: podcast.image_url,
-        song_url: episode.audio_url
-    };
 
     const isCurrent = currentTrack?.id === episode.id;
 
     const handlePlay = (e) => {
         e.stopPropagation();
-        playTrack(normalizedTrack);
+        playTrack(episode, contextQueue);
     };
 
     return (
