@@ -22,7 +22,7 @@ const Playlists = () => {
             const token = localStorage.getItem('token');
             if (!token) return;
 
-            const res = await fetch('http://localhost:3000/api/playlists', {
+            const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/playlists', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

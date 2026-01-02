@@ -21,7 +21,7 @@ const PlaylistDetail = () => {
     const fetchPlaylistDetails = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/api/playlists/${id}`, {
+            const res = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/playlists/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -40,7 +40,7 @@ const PlaylistDetail = () => {
         if (!confirm("Remove this track from playlist?")) return;
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/api/playlists/${id}/tracks/${trackId}`, {
+            const res = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/playlists/${id}/tracks/${trackId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

@@ -18,7 +18,7 @@ const userSignUp = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/api/user/register', {
+            const response = await fetch('https://music-streaming-web-app-backend.onrender.com/api/user/register', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json',

@@ -16,12 +16,12 @@ const PodcastDetail = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const podcastRes = await fetch(`http://localhost:3000/api/podcasts/${id}`);
+                const podcastRes = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/podcasts/${id}`);
                 if (!podcastRes.ok) throw new Error("Failed to fetch podcast details");
                 const podcastData = await podcastRes.json();
                 setPodcast(podcastData);
 
-                const episodesRes = await fetch(`http://localhost:3000/api/podcasts/${id}/episodes`);
+                const episodesRes = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/podcasts/${id}/episodes`);
                 if (!episodesRes.ok) throw new Error("Failed to fetch episodes");
                 const episodesData = await episodesRes.json();
                 setEpisodes(episodesData);

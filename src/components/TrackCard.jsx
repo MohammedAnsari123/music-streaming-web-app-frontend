@@ -14,7 +14,7 @@ const TrackCard = ({ track }) => {
             const token = localStorage.getItem('token');
             if (!token) return;
             try {
-                const res = await fetch(`http://localhost:3000/api/favorites/check/${track.id}`, {
+                const res = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/favorites/check/${track.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -52,7 +52,7 @@ const TrackCard = ({ track }) => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/api/favorites/toggle', {
+            const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/favorites/toggle', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

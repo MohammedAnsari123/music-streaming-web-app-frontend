@@ -20,7 +20,7 @@ export const AudioPlayerProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (!token) return;
             try {
-                const res = await fetch('http://localhost:3000/api/recently-played', {
+                const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/recently-played', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -46,7 +46,7 @@ export const AudioPlayerProvider = ({ children }) => {
             try {
                 console.log("Resolving Spotify track via Audius...", track.title);
 
-                const res = await fetch('http://localhost:3000/api/resolve', {
+                const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/resolve', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title: track.title, artist: track.artist })
@@ -81,7 +81,7 @@ export const AudioPlayerProvider = ({ children }) => {
         if (track.source === 'internet_archive') {
             try {
                 console.log("Resolving Internet Archive track...", track.title);
-                const res = await fetch('http://localhost:3000/api/resolve', {
+                const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/resolve', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -168,7 +168,7 @@ export const AudioPlayerProvider = ({ children }) => {
                 const type = track.audio_url ? (track.audio_url.includes('episodes') ? 'podcast' : 'music') : 'music';
                 const guessType = track.podcast_id ? 'podcast' : 'music';
 
-                await fetch('http://localhost:3000/api/recently-played', {
+                await fetch('https://music-streaming-web-app-backend.onrender.com/api/recently-played', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

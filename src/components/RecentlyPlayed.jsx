@@ -14,7 +14,7 @@ const RecentlyPlayed = () => {
             if (!token) return;
 
             try {
-                const res = await fetch('http://localhost:3000/api/recently-played', {
+                const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/recently-played', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

@@ -18,7 +18,7 @@ const LikedSongs = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/api/favorites', {
+            const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/favorites', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 

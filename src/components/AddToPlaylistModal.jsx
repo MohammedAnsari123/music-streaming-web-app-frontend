@@ -16,7 +16,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, track }) => {
     const fetchPlaylists = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3000/api/playlists', {
+            const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/playlists', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error("Failed to fetch playlists");
@@ -34,7 +34,7 @@ const AddToPlaylistModal = ({ isOpen, onClose, track }) => {
         setAdding(playlistId);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:3000/api/playlists/${playlistId}/tracks`, {
+            const res = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/playlists/${playlistId}/tracks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

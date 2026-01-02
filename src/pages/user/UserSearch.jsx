@@ -28,7 +28,7 @@ const UserSearch = () => {
 
             setLoading(true);
             try {
-                const res = await fetch(`http://localhost:3000/api/search?q=${encodeURIComponent(debouncedQuery)}`);
+                const res = await fetch(`https://music-streaming-web-app-backend.onrender.com/api/search?q=${encodeURIComponent(debouncedQuery)}`);
                 if (!res.ok) throw new Error("Search failed");
                 const data = await res.json();
                 setSearchResults(data);

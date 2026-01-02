@@ -23,7 +23,7 @@ const CreatePlaylistModal = ({ isOpen, onClose, onPlaylistCreated }) => {
         }
 
         try {
-            const res = await fetch('http://localhost:3000/api/playlists', {
+            const res = await fetch('https://music-streaming-web-app-backend.onrender.com/api/playlists', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

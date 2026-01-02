@@ -20,7 +20,7 @@ const userMusicDashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const songsRes = await fetch('http://localhost:3000/api/tracks');
+        const songsRes = await fetch('https://music-streaming-web-app-backend.onrender.com/api/tracks');
         if (!songsRes.ok) throw new Error("Failed to fetch songs");
         const songsData = await songsRes.json();
         setSongs(songsData);
