@@ -11,7 +11,7 @@ const PodcastCard = ({ podcast }) => {
         >
             <div className="relative mb-4">
                 <img
-                    src={podcast.image_url || "/default-podcast.png"} // Fallback image
+                    src={podcast.image_url || "/default-podcast.png"}
                     alt={podcast.title}
                     className="w-full aspect-square object-cover rounded-md shadow-lg"
                 />

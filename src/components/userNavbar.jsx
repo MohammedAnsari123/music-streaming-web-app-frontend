@@ -14,7 +14,6 @@ const UserNavbar = () => {
 
     return (
         <>
-            {/* Desktop Sidebar */}
             <div className="hidden md:flex bg-black w-[15%] h-[100vh] p-6 fixed text-gray-300 border-r border-[#282828] flex-col justify-between top-0 left-0 z-40">
                 <div>
                     <div className="mb-8 px-2 text-white">
@@ -67,7 +66,6 @@ const UserNavbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Bottom Navigation */}
             <div className="md:hidden fixed bottom-0 left-0 w-full h-16 bg-black border-t border-[#282828] text-gray-400 flex justify-around items-center z-50 px-2">
                 <Link to="/user/dashboard" className='flex flex-col items-center gap-1 hover:text-white'>
                     <Home size={20} />

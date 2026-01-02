@@ -7,17 +7,15 @@ import EmptyState from '../../components/EmptyState';
 import { Search } from 'lucide-react';
 
 const userMusicDashboard = () => {
-  const [songs, setSongs] = useState([]); // Default/All songs
+  const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [searchQuery, setSearchQuery] = useState('');
-  // Removed debouncedQuery state as we are doing client-side filtering now (instant)
 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [categories, setCategories] = useState(['All']);
 
-  // Initial Load (Default Songs)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,7 +38,6 @@ const userMusicDashboard = () => {
     fetchData();
   }, []);
 
-  // Filter Songs Client-Side (Local Only)
   const filteredSongs = songs.filter(song => {
     const cleanQuery = searchQuery.toLowerCase().trim();
     const matchesSearch = song.title.toLowerCase().includes(cleanQuery) ||
@@ -57,7 +54,6 @@ const userMusicDashboard = () => {
       <UserNavbar />
       <div className="ml-0 md:ml-[15%] w-full p-4 md:p-8 pb-40 md:pb-32 overflow-y-auto">
 
-        {/* Header & Search */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
           <div className="flex flex-col">
             <h1 className="text-3xl font-bold text-white tracking-tight">Home</h1>
@@ -77,9 +73,6 @@ const userMusicDashboard = () => {
           </div>
         </div>
 
-        {/* Recently Played - Always visible unless filtering heavily? Let's keep it visible at top or hide when filtering? 
-            Common pattern: Hide "Recently Played" if user is actively searching to reduce clutter.
-        */}
         {!searchQuery && (
           <>
             <h1 className="text-3xl font-bold mb-6">Welcome Back, User</h1>
@@ -87,7 +80,6 @@ const userMusicDashboard = () => {
           </>
         )}
 
-        {/* Categories */}
         {!loading && !error && (
           <div className="flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide">
             {categories.map(cat => (
@@ -105,7 +97,6 @@ const userMusicDashboard = () => {
           </div>
         )}
 
-        {/* Search Results Header (Only if searching) */}
         {searchQuery && (
           <div className="mb-6">
             <h2 className="text-xl font-bold text-white">
@@ -115,7 +106,6 @@ const userMusicDashboard = () => {
         )}
 
 
-        {/* Content */}
         {loading && <LoadingSkeleton count={10} type="card" />}
 
         {error && (

@@ -11,7 +11,7 @@ const RecentlyPlayed = () => {
     useEffect(() => {
         const fetchRecent = async () => {
             const token = localStorage.getItem('token');
-            if (!token) return; // Silent fail if no token
+            if (!token) return;
 
             try {
                 const res = await fetch('http://localhost:3000/api/recently-played', {
@@ -53,11 +53,7 @@ const RecentlyPlayed = () => {
             <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {recent.map((item, index) => {
                     const isMusic = item.type === 'music';
-                    // Normalized data structure from backend might be nested
-                    // item = { history_id, type, last_position, ...songs/episodes }
-                    // Let's handle the flattened structure I returned from backend
-
-                    const title = item.title; // Controller flattened it
+                    const title = item.title;
                     const subtitle = isMusic ? item.artist : item.publisher;
                     const image = item.image_url;
 
@@ -76,14 +72,11 @@ const RecentlyPlayed = () => {
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-md">
                                     <PlayCircle className="text-green-500 fill-current bg-black rounded-full" size={40} />
                                 </div>
-                                {/* Resume Bar (Optional Visual) */}
                                 {item.last_position > 0 && (
                                     <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-700 rounded-b-md overflow-hidden">
                                         <div
                                             className="h-full bg-green-500"
-                                            style={{ width: '40%' }} // Approximation or calc if we had duration.
-                                        // Since we might not have total duration here easily without joining more, 
-                                        // we can skip the width % or just fix it to show "in progress"
+                                            style={{ width: '40%' }}
                                         ></div>
                                     </div>
                                 )}

@@ -16,13 +16,11 @@ const PodcastDetail = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch Podcast Details
                 const podcastRes = await fetch(`http://localhost:3000/api/podcasts/${id}`);
                 if (!podcastRes.ok) throw new Error("Failed to fetch podcast details");
                 const podcastData = await podcastRes.json();
                 setPodcast(podcastData);
 
-                // Fetch Episodes
                 const episodesRes = await fetch(`http://localhost:3000/api/podcasts/${id}/episodes`);
                 if (!episodesRes.ok) throw new Error("Failed to fetch episodes");
                 const episodesData = await episodesRes.json();
@@ -42,10 +40,8 @@ const PodcastDetail = () => {
             <div className='flex h-screen bg-black text-white'>
                 <UserNavbar />
                 <div className="ml-0 md:ml-[15%] w-full p-8 pb-32">
-                    {/* Back Button Placeholder */}
                     <div className="w-32 h-6 bg-[#181818] rounded mb-6 animate-pulse"></div>
 
-                    {/* Header Skeleton */}
                     <div className="flex flex-col md:flex-row gap-8 mb-10 animate-pulse">
                         <div className="w-48 h-48 md:w-64 md:h-64 bg-[#181818] rounded-lg"></div>
                         <div className="flex flex-col justify-end w-full space-y-4">
@@ -56,7 +52,6 @@ const PodcastDetail = () => {
                         </div>
                     </div>
 
-                    {/* List Skeleton */}
                     <div className="h-8 bg-[#181818] rounded w-1/4 mb-6 animate-pulse"></div>
                     <LoadingSkeleton count={5} type="list" />
                 </div>
@@ -83,12 +78,10 @@ const PodcastDetail = () => {
             <UserNavbar />
             <div className="ml-0 md:ml-[15%] w-full p-4 md:p-8 pb-40 md:pb-32 overflow-y-auto">
 
-                {/* Back Button */}
                 <button onClick={() => navigate('/user/podcasts')} className="flex items-center text-gray-400 hover:text-white mb-6 transition">
                     <ArrowLeft size={20} className="mr-2" /> Back to Podcasts
                 </button>
 
-                {/* Header */}
                 <div className="flex flex-col md:flex-row gap-8 mb-10">
                     <img
                         src={podcast.image_url || "/default-podcast.png"}
@@ -103,7 +96,6 @@ const PodcastDetail = () => {
                     </div>
                 </div>
 
-                {/* Episodes List */}
                 <h2 className="text-2xl font-bold mb-6 border-b border-[#333] pb-4">Episodes ({episodes.length})</h2>
                 <div className="flex flex-col gap-2">
                     {episodes.length === 0 ? (

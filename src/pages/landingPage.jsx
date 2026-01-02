@@ -22,7 +22,6 @@ const LandingPage = () => {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Particle System
         const particleCount = 100;
         const particles = Array.from({ length: particleCount }, () => ({
             x: Math.random() * canvas.width,
@@ -30,13 +29,11 @@ const LandingPage = () => {
             vx: (Math.random() - 0.5) * 0.5,
             vy: (Math.random() - 0.5) * 0.5,
             size: Math.random() * 2 + 1,
-            // Randomize between Green and a subtle Purple for variety
             color: Math.random() > 0.5 ? '34, 197, 94' : '168, 85, 247',
             opacity: Math.random() * 0.5 + 0.2,
         }));
 
         const animate = () => {
-            // Trail effect
             ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -44,7 +41,6 @@ const LandingPage = () => {
                 particle.x += particle.vx;
                 particle.y += particle.vy;
 
-                // Bounce off edges
                 if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
                 if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
 
@@ -54,7 +50,6 @@ const LandingPage = () => {
                 ctx.fill();
             });
 
-            // Draw connections
             particles.forEach((p1, i) => {
                 particles.slice(i + 1).forEach((p2) => {
                     const dx = p1.x - p2.x;
@@ -65,7 +60,6 @@ const LandingPage = () => {
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(p2.x, p2.y);
-                        // Use the color of p1 for the line
                         ctx.strokeStyle = `rgba(${p1.color}, ${0.1 * (1 - distance / 100)})`;
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
@@ -86,26 +80,21 @@ const LandingPage = () => {
 
     return (
         <div className="relative min-h-screen bg-black text-white font-sans overflow-x-hidden">
-            {/* Animated Canvas Background */}
             <canvas
                 ref={canvasRef}
                 className="fixed inset-0 w-full h-full z-0 opacity-60 pointer-events-none"
             />
 
-            {/* Ambient Gradients - Fixed position to stay behind everything */}
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-green-500/10 rounded-full blur-[100px] animate-pulse" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
             </div>
 
-            {/* Content Wrapper */}
             <div className="relative z-10 flex flex-col min-h-screen">
                 <Navbar />
 
-                {/* Hero Section */}
                 <section className="relative h-screen flex flex-col justify-center items-center text-center px-4 overflow-hidden">
 
-                    {/* Floating Icons */}
                     <div className="absolute inset-0 pointer-events-none select-none">
                         <div className="absolute top-1/4 left-1/4 animate-bounce delay-100 opacity-50">
                             <Music2 className="w-12 h-12 text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,0.5)]" />
@@ -137,7 +126,6 @@ const LandingPage = () => {
                         </div>
                     </div>
 
-                    {/* Animated Wave Bars at Bottom */}
                     <div className="absolute bottom-0 left-0 right-0 flex items-end justify-center gap-1 h-24 px-4 opacity-50">
                         {Array.from({ length: 40 }).map((_, i) => (
                             <div
@@ -153,7 +141,6 @@ const LandingPage = () => {
                     </div>
                 </section>
 
-                {/* Features Section */}
                 <section id="features" className="py-24 relative bg-black/40 backdrop-blur-sm border-t border-white/5">
                     <div className="container mx-auto px-6">
                         <h2 className="text-5xl font-bold text-center mb-20 px-4">
@@ -181,7 +168,6 @@ const LandingPage = () => {
                     </div>
                 </section>
 
-                {/* About/Stats Section (Refined) */}
                 <section id="about" className="py-24 relative overflow-hidden bg-black/60 backdrop-blur-md border-t border-white/5">
                     <div className="container mx-auto px-6 relative z-10">
                         <div className="max-w-4xl mx-auto text-center space-y-12">
@@ -211,7 +197,6 @@ const LandingPage = () => {
                     </div>
                 </section>
 
-                {/* Footer */}
                 <footer className="bg-black py-12 border-t border-gray-900/50 backdrop-blur-xl relative z-20">
                     <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm">
                         <div className="flex items-center gap-2 mb-4 md:mb-0">

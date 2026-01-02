@@ -18,7 +18,6 @@ const LikedSongs = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            // Assuming the backend returns an array of "Track" objects
             const res = await fetch('http://localhost:3000/api/favorites', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -40,7 +39,6 @@ const LikedSongs = () => {
             <UserNavbar />
             <div className="ml-0 md:ml-[15%] w-full p-4 md:p-8 pb-40 md:pb-32 overflow-y-auto">
 
-                {/* Header */}
                 <div className="flex items-end gap-6 mb-8 border-b border-[#282828] pb-8">
                     <div className="w-40 h-40 bg-gradient-to-br from-indigo-700 to-purple-800 flex items-center justify-center rounded-lg shadow-2xl">
                         <Heart size={64} fill="white" className="text-white drop-shadow-md" />
@@ -54,7 +52,6 @@ const LikedSongs = () => {
                     </div>
                 </div>
 
-                {/* Content */}
                 {loading && <LoadingSkeleton count={5} type="row" />}
 
                 {error && (

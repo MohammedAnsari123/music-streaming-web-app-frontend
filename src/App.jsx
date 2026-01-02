@@ -5,7 +5,6 @@ import { AudioPlayerProvider } from './context/AudioPlayerContext'
 import AudioPlayer from './components/AudioPlayer'
 import ErrorBoundary from './components/ErrorBoundary'
 
-// Pages (Lazy Loaded)
 const UserLogin = React.lazy(() => import('./pages/user/userLogin'));
 const UserSignUp = React.lazy(() => import('./pages/user/userSignUp'));
 const LandingPage = React.lazy(() => import('./pages/landingPage'));
@@ -17,7 +16,6 @@ const PodcastDetail = React.lazy(() => import('./pages/user/PodcastDetail'));
 const Playlists = React.lazy(() => import('./pages/user/Playlists'));
 const PlaylistDetail = React.lazy(() => import('./pages/user/PlaylistDetail'));
 
-// Loading Component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-screen bg-black text-white">
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
@@ -47,7 +45,6 @@ function App() {
             </Routes>
           </Suspense>
 
-          {/* Global Persistence Player */}
           <AudioPlayer />
         </div>
       </AudioPlayerProvider>

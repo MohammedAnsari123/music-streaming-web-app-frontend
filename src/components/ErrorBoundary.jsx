@@ -7,19 +7,16 @@ class ErrorBoundary extends React.Component {
     }
 
     static getDerivedStateFromError(error) {
-        // Update state so the next render will show the fallback UI.
         return { hasError: true };
     }
 
     componentDidCatch(error, errorInfo) {
-        // You can also log the error to an error reporting service
         console.error("Uncaught Error:", error, errorInfo);
         this.setState({ error, errorInfo });
     }
 
     render() {
         if (this.state.hasError) {
-            // You can render any custom fallback UI
             return (
                 <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
                     <h1 className="text-4xl font-bold mb-4 text-red-500">Something went wrong.</h1>
@@ -34,7 +31,6 @@ class ErrorBoundary extends React.Component {
                         Refresh Page
                     </button>
 
-                    {/* Optional: Show error details in development */}
                     {process.env.NODE_ENV === 'development' && this.state.error && (
                         <div className="mt-8 p-4 bg-gray-900 rounded text-left overflow-auto max-w-2xl w-full border border-gray-800">
                             <p className="text-red-400 font-mono text-sm mb-2">{this.state.error.toString()}</p>

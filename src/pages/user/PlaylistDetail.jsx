@@ -47,7 +47,6 @@ const PlaylistDetail = () => {
 
             if (!res.ok) throw new Error("Failed to remove track");
 
-            // Optimistic update
             setPlaylist(prev => ({
                 ...prev,
                 tracks: prev.tracks.filter(t => t.id !== trackId)
@@ -60,7 +59,6 @@ const PlaylistDetail = () => {
     const handlePlayPlaylist = () => {
         if (playlist?.tracks?.length > 0) {
             playTrack(playlist.tracks[0]);
-            // Ideally should queue the rest, but for now playing first is good start
         }
     };
 
@@ -90,7 +88,6 @@ const PlaylistDetail = () => {
                     <ArrowLeft size={20} className="mr-2" /> Back to Library
                 </button>
 
-                {/* Header */}
                 <div className="flex flex-col md:flex-row gap-8 mb-10 items-end bg-gradient-to-b from-[#444] to-transparent p-6 rounded-t-xl -mx-4 md:-mx-8 md:p-8">
                     <div className="w-48 h-48 md:w-60 md:h-60 bg-[#282828] shadow-2xl flex items-center justify-center shrink-0">
                         <Music size={80} className="text-gray-500" />
@@ -106,7 +103,6 @@ const PlaylistDetail = () => {
                     </div>
                 </div>
 
-                {/* Actions */}
                 <div className="mb-8 px-2">
                     {playlist.tracks?.length > 0 && (
                         <button
@@ -118,7 +114,6 @@ const PlaylistDetail = () => {
                     )}
                 </div>
 
-                {/* Track List */}
                 <div className="flex flex-col">
                     <div className="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 border-b border-[#333] text-gray-400 text-sm uppercase mb-2">
                         <span>#</span>

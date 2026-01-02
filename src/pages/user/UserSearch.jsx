@@ -12,7 +12,6 @@ const UserSearch = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedQuery, setDebouncedQuery] = useState('');
 
-    // Debounce Search Input
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedQuery(searchQuery);
@@ -20,7 +19,6 @@ const UserSearch = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // Perform Search
     useEffect(() => {
         const performSearch = async () => {
             if (!debouncedQuery.trim()) {
@@ -73,7 +71,6 @@ const UserSearch = () => {
                         />
                     </div>
 
-                    {/* Results Area */}
                     <div className="mt-8">
                         {searchQuery && debouncedQuery && (
                             <div className="mb-6 flex items-center justify-between">

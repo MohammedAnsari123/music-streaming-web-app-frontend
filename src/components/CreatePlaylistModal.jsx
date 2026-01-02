@@ -3,16 +3,11 @@ import { X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const CreatePlaylistModal = ({ isOpen, onClose, onPlaylistCreated }) => {
-    const { user } = useAuth(); // We need user.id
+    const { user } = useAuth();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
-    // If we can't get user from context easily, we might need to decode token or pass it down. 
-    // Assuming useAuth provides 'user' object with 'id'.
-    // If auth state is just token, we might need to parse it or fetch profile.
-    // For now, let's assume user object is available. If not, we'll need to fix AuthContext.
 
     if (!isOpen) return null;
 
@@ -34,7 +29,7 @@ const CreatePlaylistModal = ({ isOpen, onClose, onPlaylistCreated }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ name, description }) // user_id extracted from token on backend
+                body: JSON.stringify({ name, description })
             });
 
             if (!res.ok) throw new Error("Failed to create playlist");

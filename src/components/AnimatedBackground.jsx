@@ -19,7 +19,6 @@ const AnimatedBackground = () => {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Particle System
         const particleCount = 80;
         const particles = Array.from({ length: particleCount }, () => ({
             x: Math.random() * canvas.width,
@@ -27,7 +26,7 @@ const AnimatedBackground = () => {
             vx: (Math.random() - 0.5) * 0.5,
             vy: (Math.random() - 0.5) * 0.5,
             size: Math.random() * 2 + 1,
-            color: Math.random() > 0.5 ? '34, 197, 94' : '168, 85, 247', // Green or Purple
+            color: Math.random() > 0.5 ? '34, 197, 94' : '168, 85, 247',
             opacity: Math.random() * 0.5 + 0.2,
         }));
 
@@ -48,7 +47,6 @@ const AnimatedBackground = () => {
                 ctx.fill();
             });
 
-            // Draw connections
             particles.forEach((p1, i) => {
                 particles.slice(i + 1).forEach((p2) => {
                     const dx = p1.x - p2.x;

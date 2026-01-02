@@ -8,7 +8,6 @@ const TrackCard = ({ track }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
 
-    // Initial Check
     useEffect(() => {
         if (!track) return;
         const checkLike = async () => {
@@ -27,7 +26,6 @@ const TrackCard = ({ track }) => {
         checkLike();
     }, [track]);
 
-    // Safety check
     if (!track) return null;
 
     const isCurrentTrack = currentTrack?.id === track.id;
@@ -37,7 +35,6 @@ const TrackCard = ({ track }) => {
         e.stopPropagation();
         if (!track.audio_url && track.source !== 'local' && track.source !== 'internet_archive' && track.source !== 'spotify') {
             console.error("Missing audio_url for track:", track);
-            // alert("Cannot play this track: invalid URL"); // Optional
             return;
         }
 
@@ -50,7 +47,6 @@ const TrackCard = ({ track }) => {
 
     const handleLike = async (e) => {
         e.stopPropagation();
-        // Optimistic UI
         const newStatus = !isLiked;
         setIsLiked(newStatus);
 
@@ -66,7 +62,7 @@ const TrackCard = ({ track }) => {
             });
             if (!res.ok) throw new Error("Failed");
         } catch (err) {
-            setIsLiked(!newStatus); // Revert
+            setIsLiked(!newStatus);
             console.error("Like failed", err);
         }
     };
@@ -86,7 +82,6 @@ const TrackCard = ({ track }) => {
                         className="w-full aspect-square object-cover rounded-md shadow-lg"
                     />
 
-                    {/* Play/Pause Button Overlay */}
                     <button
                         onClick={handlePlayClick}
                         className={`absolute bottom-2 right-2 bg-green-500 rounded-full p-3 shadow-lg transform transition-all duration-300 hover:scale-105 hover:bg-green-400 flex items-center justify-center
@@ -96,7 +91,6 @@ const TrackCard = ({ track }) => {
                         {isCurrentPlaying ? <Pause size={24} fill="black" /> : <Play size={24} fill="black" className="ml-1" />}
                     </button>
 
-                    {/* Add To Playlist Button (Top Right) */}
                     <button
                         onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
                         className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 p-2 rounded-full text-white opacity-0 group-hover:opacity-100 transition backdrop-blur-sm"
@@ -114,7 +108,6 @@ const TrackCard = ({ track }) => {
                         <p className="text-sm text-gray-400 truncate hover:underline">{track.artist}</p>
                     </div>
 
-                    {/* Like Button */}
                     <button
                         onClick={handleLike}
                         className={`hover:scale-110 transition-transform ${isLiked ? 'text-green-500' : 'text-gray-400 hover:text-white'}`}

@@ -11,11 +11,10 @@ export const AudioPlayerProvider = ({ children }) => {
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(1);
-    const [history, setHistory] = useState({}); // Map: trackId -> position
+    const [history, setHistory] = useState({});
 
     const saveTimeoutRef = useRef(null);
 
-    // Load History on Mount
     useEffect(() => {
         const fetchHistory = async () => {
             const token = localStorage.getItem('token');
@@ -26,10 +25,8 @@ export const AudioPlayerProvider = ({ children }) => {
                 });
                 const data = await res.json();
                 if (Array.isArray(data)) {
-                    // Create lookup map
                     const historyMap = {};
                     data.forEach(item => {
-                        // Key can be track_id (string/num) or episode_id
                         const key = item.track_id || item.episode_id;
                         historyMap[key] = item.last_position;
                     });
@@ -45,11 +42,9 @@ export const AudioPlayerProvider = ({ children }) => {
     const playTrack = async (track) => {
         let trackToPlay = track;
 
-        // BRIDGE: Spotify -> Audius Resolution
         if (track.source === 'spotify') {
             try {
                 console.log("Resolving Spotify track via Audius...", track.title);
-                // Optional: Set loading state here if UI supports it
 
                 const res = await fetch('http://localhost:3000/api/resolve', {
                     method: 'POST',
@@ -66,19 +61,16 @@ export const AudioPlayerProvider = ({ children }) => {
                 if (data.error === "NOT_FOUND") {
                     console.log("Track not found on Audius network.");
                     alert("This track is not available for free playback.");
-                    return; // Stop execution
+                    return;
                 }
 
                 console.log("Resolved:", data);
 
-                // Merge Spotify metadata with Audius Audio
                 trackToPlay = {
                     ...track,
                     audio_url: data.audio_url,
-                    duration: data.duration, // Update duration if Audius knows better
-                    source: 'audius' // Switch source context for playback? Or keep 'spotify' but with url? 
-                    // User said "Audius playback only". 
-                    // Let's keep metadata but use resolved URL.
+                    duration: data.duration,
+                    source: 'audius'
                 };
             } catch (err) {
                 console.error("Resolution flow error:", err);
@@ -86,7 +78,6 @@ export const AudioPlayerProvider = ({ children }) => {
             }
         }
 
-        // BRIDGE: Internet Archive Resolution
         if (track.source === 'internet_archive') {
             try {
                 console.log("Resolving Internet Archive track...", track.title);
@@ -96,7 +87,7 @@ export const AudioPlayerProvider = ({ children }) => {
                     body: JSON.stringify({
                         id: track.id,
                         source: 'internet_archive',
-                        title: track.title, // Pass for logging/fallback
+                        title: track.title,
                         artist: track.artist
                     })
                 });
@@ -127,10 +118,8 @@ export const AudioPlayerProvider = ({ children }) => {
             return;
         }
 
-        // New track
-        setCurrentTrack(trackToPlay); // Start fresh
+        setCurrentTrack(trackToPlay);
 
-        // CHECK RESUME
         const resumePos = history[trackToPlay.id];
         if (resumePos && resumePos > 5) {
             console.log(`Resuming ${trackToPlay.title} at ${resumePos}s`);
@@ -149,7 +138,7 @@ export const AudioPlayerProvider = ({ children }) => {
 
         if (isPlaying) {
             audioRef.current.pause();
-            saveProgress(currentTrack, audioRef.current.currentTime); // Save on pause
+            saveProgress(currentTrack, audioRef.current.currentTime);
         } else {
             audioRef.current.play();
         }
@@ -160,35 +149,23 @@ export const AudioPlayerProvider = ({ children }) => {
         if (audioRef.current) {
             audioRef.current.currentTime = time;
             setCurrentTime(time);
-            saveProgress(currentTrack, time); // Save on seek
+            saveProgress(currentTrack, time);
         }
     };
 
     const saveProgress = async (track, time) => {
-        if (!track || time < 5) return; // Don't save very short starts
+        if (!track || time < 5) return;
 
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        // Optimistic Update
         setHistory(prev => ({ ...prev, [track.id]: time }));
-
-        // Debounce/Throttle at API level or Component level?
-        // Let's implement basic throttle here using refs or just fire-and-forget for now
-        // But prompt demanded "Throttle it".
 
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
 
         saveTimeoutRef.current = setTimeout(async () => {
             try {
                 const type = track.audio_url ? (track.audio_url.includes('episodes') ? 'podcast' : 'music') : 'music';
-                // Detection is tricky if we don't store Type in Track object.
-                // Assuming 'music' implies songs table.
-                // Better: check if track object has 'artist' (Song) vs 'publisher' (Podcast)? 
-                // Let's assume Track object has a 'type' property if it's from our Normalize function, or we guess.
-
-                // FIX: Let's pass 'category' or 'type' in track object when playing.
-                // Fallback: If it has 'artist', it's music. If 'podcast_id', it's podcast.
                 const guessType = track.podcast_id ? 'podcast' : 'music';
 
                 await fetch('http://localhost:3000/api/recently-played', {
@@ -206,7 +183,7 @@ export const AudioPlayerProvider = ({ children }) => {
             } catch (err) {
                 console.error("Save progress failed", err);
             }
-        }, 2000); // 2 second debounce
+        }, 2000);
     };
 
     const handleTimeUpdate = () => {
@@ -214,7 +191,6 @@ export const AudioPlayerProvider = ({ children }) => {
             const time = audioRef.current.currentTime;
             setCurrentTime(time);
 
-            // Auto save every 10 seconds approx? 
             if (Math.floor(time) % 10 === 0 && Math.floor(time) > 0) {
                 saveProgress(currentTrack, time);
             }
@@ -227,14 +203,13 @@ export const AudioPlayerProvider = ({ children }) => {
             if (pendingSeek) {
                 audioRef.current.currentTime = pendingSeek;
                 setCurrentTime(pendingSeek);
-                setPendingSeek(null); // Clear
+                setPendingSeek(null);
             }
             if (isPlaying) {
                 const playPromise = audioRef.current.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
                         if (error.name === 'AbortError') {
-                            // Expected if user pauses/switches quickly
                             console.log("Playback interrupted (AbortError)");
                         } else {
                             console.error("Playback failed:", error);
@@ -248,8 +223,7 @@ export const AudioPlayerProvider = ({ children }) => {
 
     const handleEnded = () => {
         setIsPlaying(false);
-        saveProgress(currentTrack, 0); // Reset or Keep? Usually keep "finished" state or reset. Prompt said "Do not auto-resume after track finished". So maybe reset history to 0?
-        // Let's reset history for this track so next play starts at 0.
+        saveProgress(currentTrack, 0);
         setHistory(prev => ({ ...prev, [currentTrack.id]: 0 }));
     };
 
