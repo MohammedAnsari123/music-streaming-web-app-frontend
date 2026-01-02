@@ -63,6 +63,8 @@ export const AudioPlayerProvider = ({ children }) => {
             }
         }
 
+        const FALLBACK_AUDIO = '/fallback_audio.mp3';
+
         if (track.source === 'spotify') {
             try {
                 console.log("Resolving Spotify track via Audius...", track.title);
@@ -80,22 +82,20 @@ export const AudioPlayerProvider = ({ children }) => {
                 const data = await res.json();
 
                 if (data.error === "NOT_FOUND") {
-                    console.log("Track not found on Audius network.");
-                    alert("This track is not available for free playback.");
-                    return;
+                    console.log("Track not found, using fallback.");
+                    trackToPlay = { ...track, audio_url: FALLBACK_AUDIO };
+                } else {
+                    console.log("Resolved:", data);
+                    trackToPlay = {
+                        ...track,
+                        audio_url: data.audio_url,
+                        duration: data.duration,
+                        source: 'audius'
+                    };
                 }
-
-                console.log("Resolved:", data);
-
-                trackToPlay = {
-                    ...track,
-                    audio_url: data.audio_url,
-                    duration: data.duration,
-                    source: 'audius'
-                };
             } catch (err) {
-                console.error("Resolution flow error:", err);
-                return;
+                console.error("Resolution flow error, using fallback:", err);
+                trackToPlay = { ...track, audio_url: FALLBACK_AUDIO };
             }
         }
 
@@ -117,21 +117,26 @@ export const AudioPlayerProvider = ({ children }) => {
                 const data = await res.json();
 
                 if (!data.audio_url) {
-                    alert("Audio file not found for this item.");
-                    return;
+                    console.log("IA audio not found, using fallback.");
+                    trackToPlay = { ...track, audio_url: FALLBACK_AUDIO };
+                } else {
+                    trackToPlay = {
+                        ...track,
+                        audio_url: data.audio_url,
+                        duration: data.duration,
+                        source: 'internet_archive'
+                    };
                 }
 
-                trackToPlay = {
-                    ...track,
-                    audio_url: data.audio_url,
-                    duration: data.duration,
-                    source: 'internet_archive'
-                };
-
             } catch (err) {
-                console.error("IA Resolution Error:", err);
-                return;
+                console.error("IA Resolution Error, using fallback:", err);
+                trackToPlay = { ...track, audio_url: FALLBACK_AUDIO };
             }
+        }
+
+        if (!trackToPlay.audio_url) {
+            console.log("No audio URL found, using fallback.");
+            trackToPlay = { ...track, audio_url: FALLBACK_AUDIO };
         }
 
         if (currentTrack?.id === trackToPlay.id) {
